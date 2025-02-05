@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async"
 import Layout from "../../components/Layout/Layout"
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +16,14 @@ const PokemonDetail = () => {
 
     const { name } = useParams();
 
+    const location = useLocation();
+
+    // Reset pokemon data when route changes
+    useEffect(() => {
+        setPokemon({});
+    }, [location.pathname]);
+
+    // Fetch Pokémon data
     useEffect(() => {
         if (!name) return;
 
@@ -92,12 +100,14 @@ const PokemonDetail = () => {
         getPokemonData();
     }, [name]);
 
+    // Check if Pokémon is favorite
     useEffect(() => {
         const favoritePokemons = JSON.parse(localStorage.getItem("favoritePokemons")) || [];
         const isFavorite = favoritePokemons.some(p => p.id === pokemon.id);
         setIsFavorite(isFavorite);
     }, [pokemon.id]);
 
+    // Save and remove favorite Pokemon
     const savePokemon = () => {
         const favoritePokemons = JSON.parse(localStorage.getItem("favoritePokemons")) || [];
         favoritePokemons.push({
@@ -125,6 +135,7 @@ const PokemonDetail = () => {
         setIsFavorite(!isFavorite);
     };
 
+    // Redirect to 404 page if pokemon is not found
     if (!loading && !pokemon.id) {
         return <Navigate to="/404" replace />
     }
