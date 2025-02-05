@@ -1,9 +1,8 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { Helmet } from "react-helmet-async"
-import { useEffect } from "react"
 import axios from "axios"
-import Layout from "../../components/Layout/Layout"
-import PokemonList from "../../components/PokemonList/PokemonList"
+import Layout from "@/components/Layout/Layout"
+import PokemonList from "@/components/PokemonList/PokemonList"
 import { Button } from "@/components/ui/button"
 
 const Home = () => {

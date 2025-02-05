@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async"
 import Layout from "../../components/Layout/Layout"
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
@@ -124,6 +124,10 @@ const PokemonDetail = () => {
         }
         setIsFavorite(!isFavorite);
     };
+
+    if (!loading && !pokemon.id) {
+        return <Navigate to="/404" replace />
+    }
 
     return (
         <>

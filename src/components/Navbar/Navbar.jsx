@@ -1,8 +1,9 @@
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaSearch } from "react-icons/fa";
 import NavItem from "./NavItem";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Input } from "../ui/input";
 
 const navItems = [
     {
@@ -20,6 +21,8 @@ const navItems = [
 ];
 
 const Navbar = () => {
+    const navigate = useNavigate();
+
     return (
         <nav className="w-full sticky top-0 z-20 shadow-lg bg-white bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-50 border border-slate-100 text-slate-800">
             <div className="container mx-auto py-4">
@@ -32,16 +35,31 @@ const Navbar = () => {
                             height="150"
                         />
                     </NavLink>
-                    <ul className="hidden lg:flex items-center gap-4">
-                        {navItems.map((item) => (
-                            <li key={item.title}>
-                                <NavItem
-                                    title={item.title}
-                                    href={item.href}
-                                />
-                            </li>
-                        ))}
-                    </ul>
+                    <div className="hidden lg:flex items-center gap-4">
+                        <ul className="flex items-center gap-4">
+                            {navItems.map((item) => (
+                                <li key={item.title}>
+                                    <NavItem
+                                        title={item.title}
+                                        href={item.href}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="relative">
+                            <Input
+                                type="search"
+                                className="pl-8 bg-transparent"
+                                placeholder="Search Pokemon..."
+                                onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                        navigate(`/pokemons/${e.target.value?.toLowerCase()}`);
+                                    }
+                                }}
+                            />
+                            <FaSearch className="absolute left-2 top-3 text-slate-300" />
+                        </div>
+                    </div>
 
                     <Sheet>
                         <SheetTrigger asChild>
@@ -50,7 +68,7 @@ const Navbar = () => {
                             </Button>
                         </SheetTrigger>
                         <SheetContent className="border-0">
-                            <ul className="grid gap-3">
+                            <ul className="grid gap-3 mb-3">
                                 {navItems.map((item) => (
                                     <li key={item.title}>
                                         <NavItem
@@ -60,6 +78,19 @@ const Navbar = () => {
                                     </li>
                                 ))}
                             </ul>
+                            <div className="relative">
+                                <Input
+                                    type="search"
+                                    className="pl-8 bg-transparent"
+                                    placeholder="Search Pokemon..."
+                                    onKeyPress={(e) => {
+                                        if (e.key === "Enter") {
+                                            navigate(`/pokemons/${e.target.value?.toLowerCase()}`);
+                                        }
+                                    }}
+                                />
+                                <FaSearch className="absolute left-2 top-3 text-slate-300" />
+                            </div>
                         </SheetContent>
                     </Sheet>
                 </div>
