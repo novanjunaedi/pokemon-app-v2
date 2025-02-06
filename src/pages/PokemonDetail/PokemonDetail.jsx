@@ -81,16 +81,16 @@ const PokemonDetail = () => {
                     id: response.data.id,
                     base_experience: response.data.base_experience,
                     picture: response.data.sprites.other["official-artwork"].front_default,
-                    name: response.data.name,
-                    jp_name: speciesResponse.data.names[0].name,
+                    name: response.data?.name,
+                    jp_name: speciesResponse.data.names[0]?.name,
                     gender: {
                         male: malePercentage,
                         female: femalePercentage
                     },
                     types,
-                    species: speciesResponse.data.genera[7].genus,
-                    habitat: speciesResponse.data.habitat.name,
-                    growth_rate: speciesResponse.data.growth_rate.name,
+                    species: speciesResponse.data.genera[7]?.genus,
+                    habitat: speciesResponse.data.habitat?.name,
+                    growth_rate: speciesResponse.data.growth_rate?.name,
                     height: response.data.height,
                     weight: response.data.weight,
                     strengths,
@@ -113,18 +113,18 @@ const PokemonDetail = () => {
     // Check if Pokémon is favorite
     useEffect(() => {
         const favoritePokemons = JSON.parse(localStorage.getItem("favoritePokemons")) || [];
-        const isFavorite = favoritePokemons.some(p => p.id === pokemon.id);
+        const isFavorite = favoritePokemons.some(p => p.id === pokemon?.id);
         setIsFavorite(isFavorite);
-    }, [pokemon.id]);
+    }, [pokemon?.id]);
 
     // Save and remove favorite Pokemon
     const savePokemon = () => {
         const favoritePokemons = JSON.parse(localStorage.getItem("favoritePokemons")) || [];
         favoritePokemons.push({
-            id: pokemon.id,
-            name: pokemon.name,
-            picture: pokemon.picture,
-            types: pokemon.types,
+            id: pokemon?.id,
+            name: pokemon?.name,
+            picture: pokemon?.picture,
+            types: pokemon?.types,
             isFavorite: true
         });
         localStorage.setItem("favoritePokemons", JSON.stringify(favoritePokemons));
@@ -132,7 +132,7 @@ const PokemonDetail = () => {
 
     const removePokemon = () => {
         const favoritePokemons = JSON.parse(localStorage.getItem("favoritePokemons")) || [];
-        const updatedPokemons = favoritePokemons.filter(p => p.id !== pokemon.id);
+        const updatedPokemons = favoritePokemons.filter(p => p.id !== pokemon?.id);
         localStorage.setItem("favoritePokemons", JSON.stringify(updatedPokemons));
     };
 
@@ -146,9 +146,9 @@ const PokemonDetail = () => {
     };
 
     // Redirect to 404 page if pokemon is not found
-    if (!loading && !pokemon.id) {
-        return <Navigate to="/404" replace />
-    }
+    // if (!loading && !pokemon?.id) {
+    //     return <Navigate to="/404" replace />
+    // }
 
     return (
         <>
@@ -179,21 +179,21 @@ const PokemonDetail = () => {
                                     <img
                                         height={200}
                                         width={200}
-                                        src={pokemon.picture}
+                                        src={pokemon?.picture}
                                         className="object-contain drop-shadow-lg"
-                                        alt={pokemon.name}
+                                        alt={pokemon?.name}
                                     />
                                 </div>
 
                                 {/* Pokémon Info */}
                                 <div className="w-full md:w-2/3">
-                                    <span className="text-2xl font-bold text-gray-500">#{pokemon.id}</span>
-                                    <h1 className="text-5xl font-extrabold capitalize text-gray-900">{pokemon.name}</h1>
-                                    <p className="text-xl font-semibold text-gray-700 my-2">[{pokemon.jp_name}]</p>
+                                    <span className="text-2xl font-bold text-gray-500">#{pokemon?.id}</span>
+                                    <h1 className="text-5xl font-extrabold capitalize text-gray-900">{pokemon?.name}</h1>
+                                    <p className="text-xl font-semibold text-gray-700 my-2">[{pokemon?.jp_name}]</p>
 
                                     {/* Pokémon Types */}
                                     <div className="flex flex-wrap gap-2 my-4">
-                                        {pokemon.types?.map((type, index) => (
+                                        {pokemon?.types?.map((type, index) => (
                                             <Badge key={index} variant="outline" className="border-blue-500 font-bold capitalize py-2 px-3">
                                                 {type}
                                             </Badge>
@@ -203,7 +203,7 @@ const PokemonDetail = () => {
                                     {/* Pokémon Description */}
                                     <div className="mb-4">
                                         <p className="font-semibold text-lg text-gray-700">Description</p>
-                                        <p className="text-gray-600">{pokemon.description}</p>
+                                        <p className="text-gray-600">{pokemon?.description}</p>
                                     </div>
 
                                     {/* Gender */}
@@ -212,11 +212,11 @@ const PokemonDetail = () => {
                                         <div className="flex gap-4">
                                             <div className="flex items-center gap-2">
                                                 <FaMars className="text-blue-500 text-lg" />
-                                                <span className="font-medium">{pokemon.gender?.male}</span>
+                                                <span className="font-medium">{pokemon?.gender?.male}</span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <FaVenus className="text-pink-500 text-lg" />
-                                                <span className="font-medium">{pokemon.gender?.female}</span>
+                                                <span className="font-medium">{pokemon?.gender?.female}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -225,7 +225,7 @@ const PokemonDetail = () => {
                                     <div className="mb-4">
                                         <p className="font-semibold text-lg text-gray-700">Abilities</p>
                                         <div className="flex flex-wrap gap-2">
-                                            {pokemon.abilities?.map((ability, index) => (
+                                            {pokemon?.abilities?.map((ability, index) => (
                                                 <Badge key={index} variant="default" className="bg-blue-500 font-bold capitalize py-2 px-3">
                                                     {ability}
                                                 </Badge>
@@ -237,7 +237,7 @@ const PokemonDetail = () => {
                                     <div className="mb-4">
                                         <p className="font-semibold text-lg text-gray-700">Weaknesses</p>
                                         <div className="flex flex-wrap gap-2">
-                                            {pokemon.weaknesses?.map((weakness, index) => (
+                                            {pokemon?.weaknesses?.map((weakness, index) => (
                                                 <Badge key={index} variant="destructive" className="font-bold capitalize py-2 px-3">
                                                     {weakness}
                                                 </Badge>
@@ -249,11 +249,11 @@ const PokemonDetail = () => {
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div className="text-center">
                                             <p className="font-semibold text-lg text-gray-700">Height</p>
-                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3">{(pokemon.height * 0.1).toFixed(1)} m</Badge>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3">{(pokemon?.height * 0.1).toFixed(1)} m</Badge>
                                         </div>
                                         <div className="text-center">
                                             <p className="font-semibold text-lg text-gray-700">Weight</p>
-                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3">{(pokemon.weight * 0.1).toFixed(1)} kg</Badge>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3">{(pokemon?.weight * 0.1).toFixed(1)} kg</Badge>
                                         </div>
                                     </div>
 
@@ -261,11 +261,11 @@ const PokemonDetail = () => {
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div className="text-center">
                                             <p className="font-semibold text-lg text-gray-700">Species</p>
-                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon.species}</Badge>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon?.species}</Badge>
                                         </div>
                                         <div className="text-center">
                                             <p className="font-semibold text-lg text-gray-700">Habitat</p>
-                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon.habitat}</Badge>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon?.habitat}</Badge>
                                         </div>
                                     </div>
 
@@ -273,11 +273,11 @@ const PokemonDetail = () => {
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div className="text-center">
                                             <p className="font-semibold text-lg text-gray-700">Base Exp</p>
-                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3">{pokemon.base_experience}</Badge>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3">{pokemon?.base_experience}</Badge>
                                         </div>
                                         <div className="text-center">
                                             <p className="font-semibold text-lg text-gray-700">Growth Rate</p>
-                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon.growth_rate}</Badge>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon?.growth_rate}</Badge>
                                         </div>
                                     </div>
 
@@ -285,7 +285,7 @@ const PokemonDetail = () => {
                                     <div className="mb-4">
                                         <p className="font-semibold text-lg text-gray-700 text-center">Stats</p>
                                         <div className="flex flex-col gap-3">
-                                            {pokemon.stats?.map((stat, index) => (
+                                            {pokemon?.stats?.map((stat, index) => (
                                                 <div key={index} className="flex flex-col gap-1">
                                                     <div className="flex justify-between text-sm text-gray-700 font-semibold capitalize">
                                                         <span>{stat.name}</span>
@@ -301,7 +301,7 @@ const PokemonDetail = () => {
                                     <div className="text-center mb-4">
                                         <p className="font-semibold text-lg text-gray-700">Evolutions</p>
                                         <div className="flex flex-wrap justify-center gap-2 mt-2">
-                                            {pokemon.evolutions?.map((evolution, index) => (
+                                            {pokemon?.evolutions?.map((evolution, index) => (
                                                 <Link to={`/pokemons/${evolution}`} key={index}>
                                                     <div className="bg-white w-[120px] h-[120px] rounded-xl shadow-md hover:scale-105 transition-transform duration-200">
                                                         <img
