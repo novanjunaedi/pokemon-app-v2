@@ -6,8 +6,9 @@ import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MdCatchingPokemon } from "react-icons/md";
-import { FaMars, FaVenus } from "react-icons/fa";
+import { FaChevronRight, FaMars, FaVenus } from "react-icons/fa";
 import { Progress } from "@/components/ui/progress";
+import { toast } from "@/hooks/use-toast";
 
 const PokemonDetail = () => {
     const [pokemon, setPokemon] = useState({});
@@ -128,12 +129,18 @@ const PokemonDetail = () => {
             isFavorite: true
         });
         localStorage.setItem("favoritePokemons", JSON.stringify(favoritePokemons));
+        toast({
+            description: "Pokemons has been added to your favorite list.",
+        });
     };
 
     const removePokemon = () => {
         const favoritePokemons = JSON.parse(localStorage.getItem("favoritePokemons")) || [];
         const updatedPokemons = favoritePokemons.filter(p => p.id !== pokemon?.id);
         localStorage.setItem("favoritePokemons", JSON.stringify(updatedPokemons));
+        toast({
+            description: "Pokemons has been removed from your favorite list.",
+        });
     };
 
     const toggleFavorite = () => {
@@ -146,9 +153,9 @@ const PokemonDetail = () => {
     };
 
     // Redirect to 404 page if pokemon is not found
-    // if (!loading && !pokemon?.id) {
-    //     return <Navigate to="/404" replace />
-    // }
+    if (!loading && !pokemon?.id) {
+        return <Navigate to="/404" replace />
+    }
 
     return (
         <>
@@ -169,6 +176,7 @@ const PokemonDetail = () => {
                                 type="button"
                                 className="absolute top-4 right-4 w-16 h-16 flex items-center justify-center"
                                 onClick={toggleFavorite}
+                                title={isFavorite ? "Remove from favorites" : "Add to favorites"}
                             >
                                 <MdCatchingPokemon size={80} className={isFavorite ? "text-red-500" : "text-slate-300"} />
                             </button>
@@ -298,20 +306,25 @@ const PokemonDetail = () => {
                                     </div>
 
                                     {/* Evolutions */}
-                                    <div className="text-center mb-4">
-                                        <p className="font-semibold text-lg text-gray-700">Evolutions</p>
-                                        <div className="flex flex-wrap justify-center gap-2 mt-2">
+                                    <div className="text-center mb-6">
+                                        <p className="font-semibold text-xl text-gray-800">Evolutions</p>
+                                        <div className="flex flex-wrap justify-center items-center gap-4 mt-3">
                                             {pokemon?.evolutions?.map((evolution, index) => (
-                                                <Link to={`/pokemons/${evolution}`} key={index}>
-                                                    <div className="bg-white w-[120px] h-[120px] rounded-xl shadow-md hover:scale-105 transition-transform duration-200">
-                                                        <img
-                                                            className="w-full h-full object-contain rounded-xl border-gray-300 border-[3px]"
-                                                            src={`https://img.pokemondb.net/artwork/${evolution}.jpg`}
-                                                            alt={evolution}
-                                                        />
-                                                    </div>
-                                                    <p className="my-3 font-semibold capitalize">{evolution}</p>
-                                                </Link>
+                                                <div className="flex items-center gap-2" key={index}>
+                                                    <Link to={`/pokemons/${evolution}`} className="text-center">
+                                                        <div className="bg-white w-[100px] h-[100px] rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:scale-105">
+                                                            <img
+                                                                className="w-full h-full object-contain"
+                                                                src={`https://img.pokemondb.net/artwork/${evolution}.jpg`}
+                                                                alt={evolution}
+                                                            />
+                                                        </div>
+                                                        <p className="mt-1 text-sm font-medium text-gray-700 capitalize">{evolution}</p>
+                                                    </Link>
+                                                    {index !== pokemon?.evolutions?.length - 1 && (
+                                                        <FaChevronRight className="text-lg text-gray-500" />
+                                                    )}
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
