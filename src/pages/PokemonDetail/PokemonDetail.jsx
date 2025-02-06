@@ -62,12 +62,19 @@ const PokemonDetail = () => {
 
                 // Get Evolution Chain
                 const evolutions = [];
-                let evolutionData = evolutionResponse.data.chain;
 
-                do {
+                const extractEvolutions = (evolutionData) => {
+                    if (!evolutionData) return;
+
                     evolutions.push(evolutionData.species.name);
-                    evolutionData = evolutionData.evolves_to[0];
-                } while (evolutionData);
+
+                    if (evolutionData.evolves_to.length > 0) {
+                        evolutionData.evolves_to.forEach(nextEvolution => extractEvolutions(nextEvolution));
+                    }
+                };
+
+                // Ambil evolusi dari data awal
+                extractEvolutions(evolutionResponse.data.chain);
 
                 // Set Pokémon data
                 setPokemon({
@@ -75,12 +82,15 @@ const PokemonDetail = () => {
                     base_experience: response.data.base_experience,
                     picture: response.data.sprites.other["official-artwork"].front_default,
                     name: response.data.name,
+                    jp_name: speciesResponse.data.names[0].name,
                     gender: {
                         male: malePercentage,
                         female: femalePercentage
                     },
                     types,
-                    species: speciesResponse.data.name,
+                    species: speciesResponse.data.genera[7].genus,
+                    habitat: speciesResponse.data.habitat.name,
+                    growth_rate: speciesResponse.data.growth_rate.name,
                     height: response.data.height,
                     weight: response.data.weight,
                     strengths,
@@ -179,6 +189,7 @@ const PokemonDetail = () => {
                                 <div className="w-full md:w-2/3">
                                     <span className="text-2xl font-bold text-gray-500">#{pokemon.id}</span>
                                     <h1 className="text-5xl font-extrabold capitalize text-gray-900">{pokemon.name}</h1>
+                                    <p className="text-xl font-semibold text-gray-700 my-2">[{pokemon.jp_name}]</p>
 
                                     {/* Pokémon Types */}
                                     <div className="flex flex-wrap gap-2 my-4">
@@ -193,6 +204,21 @@ const PokemonDetail = () => {
                                     <div className="mb-4">
                                         <p className="font-semibold text-lg text-gray-700">Description</p>
                                         <p className="text-gray-600">{pokemon.description}</p>
+                                    </div>
+
+                                    {/* Gender */}
+                                    <div className="mb-4">
+                                        <p className="font-semibold text-lg text-gray-700">Gender</p>
+                                        <div className="flex gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <FaMars className="text-blue-500 text-lg" />
+                                                <span className="font-medium">{pokemon.gender?.male}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <FaVenus className="text-pink-500 text-lg" />
+                                                <span className="font-medium">{pokemon.gender?.female}</span>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {/* Abilities */}
@@ -231,24 +257,27 @@ const PokemonDetail = () => {
                                         </div>
                                     </div>
 
-                                    {/* Base Experience & Gender */}
+                                    {/* Species & Habitat */}
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                        <div className="text-center">
+                                            <p className="font-semibold text-lg text-gray-700">Species</p>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon.species}</Badge>
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="font-semibold text-lg text-gray-700">Habitat</p>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon.habitat}</Badge>
+                                        </div>
+                                    </div>
+
+                                    {/* Base Experience & Grow Rate */}
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div className="text-center">
                                             <p className="font-semibold text-lg text-gray-700">Base Exp</p>
                                             <Badge variant="secondary" className="font-bold block text-center w-full py-3">{pokemon.base_experience}</Badge>
                                         </div>
                                         <div className="text-center">
-                                            <p className="font-semibold text-lg text-gray-700">Gender</p>
-                                            <Badge variant="secondary" className="font-bold flex gap-3 justify-center text-center w-full py-3">
-                                                <div className="flex items-center gap-2">
-                                                    <FaMars className="text-blue-500 text-lg" />
-                                                    <span className="font-medium">{pokemon.gender?.male}</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <FaVenus className="text-pink-500 text-lg" />
-                                                    <span className="font-medium">{pokemon.gender?.female}</span>
-                                                </div>
-                                            </Badge>
+                                            <p className="font-semibold text-lg text-gray-700">Growth Rate</p>
+                                            <Badge variant="secondary" className="font-bold block text-center w-full py-3 capitalize">{pokemon.growth_rate}</Badge>
                                         </div>
                                     </div>
 
